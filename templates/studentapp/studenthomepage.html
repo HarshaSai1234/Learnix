@@ -1,0 +1,91 @@
+{% extends 'navbar/studentnavbar.html' %}
+
+{% block title %}Student Dashboard - Learnix{% endblock %}
+
+{% block content %}
+        <!-- Statistics Section -->
+        <div class="stats">
+            <h2 style="color: #333;">Your Learning Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Active Courses</div>
+                </div>
+                <div class="stat-item" style="border-left-color: #9c27b0;">
+                    <div class="stat-number" style="color: #9c27b0;">2</div>
+                    <div class="stat-label">Pending Assignments</div>
+                </div>
+                <div class="stat-item" style="border-left-color: #4caf50;">
+                    <div class="stat-number" style="color: #4caf50;">85%</div>
+                    <div class="stat-label">Overall Progress</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <h1 class="section-title">Dashboard</h1>
+        <div class="dashboard-grid">
+            <!-- Learns Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon learns-icon">📖</div>
+                    <div>
+                        <h2 class="card-title">Learns</h2>
+                    </div>
+                </div>
+                <p class="card-description">Access course materials, video lectures, and study resources to enhance your learning.</p>
+                <div class="card-content">
+                    <ul>
+                        <li>Video Lectures & Tutorials</li>
+                        <li>Study Materials & Notes</li>
+                        <li>Reading Resources</li>
+                        <li>Downloadable Content</li>
+                        <li>Interactive Quizzes</li>
+                    </ul>
+                </div>
+                <button class="btn-primary">Go to Courses</button>
+            </div>
+
+            <!-- Submits Assignments Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon assignments-icon">✏️</div>
+                    <div>
+                        <h2 class="card-title">Submit Assignments</h2>
+                    </div>
+                </div>
+                <p class="card-description">Submit your assignments, complete tasks, and receive feedback from instructors.</p>
+                <div class="card-content">
+                    <ul>
+                        <li>Upload Assignment Files</li>
+                        <li>Track Submission Status</li>
+                        <li>View Deadlines</li>
+                        <li>Receive Feedback</li>
+                        <li>Resubmit if Needed</li>
+                    </ul>
+                </div>
+                <button class="btn-primary">View Assignments</button>
+            </div>
+
+            <!-- Tracks Progress Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon progress-icon">📊</div>
+                    <div>
+                        <h2 class="card-title">Track Progress</h2>
+                    </div>
+                </div>
+                <p class="card-description">Monitor your learning journey with detailed progress reports and performance analytics.</p>
+                <div class="card-content">
+                    <ul>
+                        <li>Course Completion Rate</li>
+                        <li>Assignment Scores</li>
+                        <li>Quiz Performance</li>
+                        <li>Time Spent Learning</li>
+                        <li>Achievement Badges</li>
+                    </ul>
+                </div>
+                <button class="btn-primary">View Progress</button>
+            </div>
+        </div>
+{% endblock %}

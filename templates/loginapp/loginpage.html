@@ -3,8 +3,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Learnix</title>
-    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}?v=14">
 
 </head>
 <body>
@@ -33,19 +36,19 @@
                 {% csrf_token %}
 
                 <div class="input-group">
-                    <input type="text" required>
+                    <input type="text">
                     <label>Username</label>
                 </div>
 
                 <div class="input-group">
-                    <input type="password" required>
+                    <input type="password">
                     <label>Password</label>
                 </div>
 
                 <button type="submit">Login</button>
 
                 <p class="footer-text">
-                    New here? <a href="#">Create account</a>
+                    New here? <a href="{% url 'registerpage' %}">Create account</a>
                 </p>
             </form>
         </div>
