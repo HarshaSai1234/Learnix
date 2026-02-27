@@ -15,25 +15,7 @@ def registerpage(request):
         email = request.POST.get('email', '')
         password1 = request.POST.get('password1', '')
         password2 = request.POST.get('password2', '')
-        
-        # Validation
-        if password1 != password2:
-            messages.error(request, 'Passwords do not match!')
-            return render(request, 'loginapp/registerpage.html')
-        
-        if len(password1) < 6:
-            messages.error(request, 'Password must be at least 6 characters long!')
-            return render(request, 'loginapp/registerpage.html')
-        
-        # Check if user already exists
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists!')
-            return render(request, 'loginapp/registerpage.html')
-        
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists!')
-            return render(request, 'loginapp/registerpage.html')
-        
+
         # Create new user
         try:
             user = User.objects.create(
