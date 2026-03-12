@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Learnix{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #0f1110;
+      --bg-mid: #161817;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-border: rgba(255, 255, 255, 0.12);
+      --text: #f4f4f3;
+      --muted: #a1a1a0;
+      --accent: #d17852;
+      --accent-hover: #bf6846;
+      --accent-glow: rgba(209, 120, 82, 0.45);
+    }
+
+    body {
+      font-family: "Sora", "SF Pro Display", system-ui, sans-serif;
+      background:
+        radial-gradient(120% 90% at 15% 10%, rgba(209, 120, 82, 0.25), transparent 55%),
+        radial-gradient(100% 80% at 85% 90%, rgba(0, 0, 0, 0.6), transparent 60%),
+        linear-gradient(135deg, var(--bg-dark), var(--bg-mid));
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ==============================
+       NAVBAR
+       ============================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 64px;
+      background: rgba(15, 17, 16, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .nav-brand a {
+      display: inline-block;
+      line-height: 0;
+    }
+
+    .nav-brand img {
+      height: 60px;
+      filter: drop-shadow(0 0 12px rgba(209, 120, 82, 0.3));
+      transition: filter 0.25s ease;
+    }
+
+    .nav-brand img:hover {
+      filter: drop-shadow(0 0 20px rgba(209, 120, 82, 0.55));
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn-nav-login {
+      padding: 10px 22px !important;
+      border-radius: 10px !important;
+      border: 1px solid var(--surface-border) !important;
+      background: var(--surface) !important;
+      color: var(--text) !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-nav-login:hover {
+      border-color: var(--accent) !important;
+      color: var(--accent) !important;
+    }
+
+    .btn-nav-register {
+      padding: 10px 22px !important;
+      border-radius: 10px !important;
+      background: linear-gradient(135deg, var(--accent), #e28a62) !important;
+      color: #fff !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .btn-nav-register:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px var(--accent-glow) !important;
+      color: #fff !important;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 16px 28px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+
+      .nav-links a {
+        font-size: 13px;
+      }
+
+      .btn-nav-login,
+      .btn-nav-register {
+        padding: 8px 16px !important;
+        font-size: 13px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a href="{% url 'homepage' %}">
+        <img src="{% static 'logo.png' %}" alt="Learnix Logo" />
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#roles">Who It's For</a>
+      <a href="{% url 'loginpage' %}" class="btn-nav-login">Sign In</a>
+      <a href="{% url 'registerpage' %}" class="btn-nav-register">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  {% block content %}{% endblock %}
+
+</body>
+</html>

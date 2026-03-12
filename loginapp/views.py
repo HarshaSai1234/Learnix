@@ -33,3 +33,5 @@ def registerpage(request):
 
 def studenthomepage(request):
     return render(request, 'studentapp/studenthomepage.html')
+def homepage(request):
+    return render(request, 'loginapp/homepage.html')

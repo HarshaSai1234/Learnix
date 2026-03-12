@@ -1,10 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Learnix</title>
-</head>
-<body>
+{% extends 'navbar/homepagenavbar.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Learnix – Your Smart Learning Platform{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🎓 Smart Learning, Simplified</div>
+      <h1 class="hero-title">
+        Learn. Teach.<br/>
+        <span class="accent-text">Grow Together.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Learnix brings students, instructors, and admins onto one seamless platform —
+        manage courses, submit assignments, and track progress all in one place.
+      </p>
+      <div class="hero-cta">
+        <a href="{% url 'registerpage' %}" class="btn-primary">Start Learning Free</a>
+        <a href="{% url 'loginpage' %}" class="btn-ghost">Sign In →</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-card card-1">
+        <div class="card-icon">📚</div>
+        <div class="card-text">
+          <strong>12 Courses</strong>
+          <span>Available now</span>
+        </div>
+      </div>
+      <div class="floating-card card-2">
+        <div class="card-icon">✅</div>
+        <div class="card-text">
+          <strong>Assignment Submitted</strong>
+          <span>Just now</span>
+        </div>
+      </div>
+      <div class="floating-card card-3">
+        <div class="card-icon">⭐</div>
+        <div class="card-text">
+          <strong>Grade: A+</strong>
+          <span>Data Structures</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <p class="section-tag">What We Offer</p>
+      <h2>Everything you need to learn effectively</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗂️</div>
+        <h3>Course Management</h3>
+        <p>Instructors can build full curricula, add materials, and manage student enrollment with ease.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Assignment Portal</h3>
+        <p>Students submit work digitally. Instructors review and grade from a clean, organized dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Progress Tracking</h3>
+        <p>Visual dashboards show grades, completion rates, and performance insights in real time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Feedback System</h3>
+        <p>Instructors leave detailed comments on submissions, helping students improve faster.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Role-Based Access</h3>
+        <p>Admins, instructors, and students each get a tailored experience with the right permissions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Fast & Lightweight</h3>
+        <p>Built on Django for reliability and speed — no bloat, just a smooth learning experience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES SECTION -->
+  <section class="roles" id="roles">
+    <div class="section-header">
+      <p class="section-tag">Built For Everyone</p>
+      <h2>Three roles, one platform</h2>
+    </div>
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-emoji">🛡️</div>
+        <h3>Admin</h3>
+        <p>Configure and manage the entire LMS. Oversee users, monitor activity, and keep the platform running smoothly.</p>
+        <a href="{% url 'loginpage' %}" class="role-link">Admin Login →</a>
+      </div>
+      <div class="role-card role-featured">
+        <div class="role-badge">Most Active</div>
+        <div class="role-emoji">👩‍🏫</div>
+        <h3>Instructor</h3>
+        <p>Create courses, post materials, review assignments, and guide students toward success.</p>
+        <a href="{% url 'loginpage' %}" class="role-link">Instructor Login →</a>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">🎒</div>
+        <h3>Student</h3>
+        <p>Enroll in courses, access learning content, submit assignments, and track your academic progress.</p>
+        <a href="{% url 'registerpage' %}" class="role-link">Join as Student →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="cta-glow"></div>
+    <h2>Ready to start your learning journey?</h2>
+    <p>Join Learnix today and experience education the smarter way.</p>
+    <a href="{% url 'registerpage' %}" class="btn-primary">Create Free Account</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">
+      <img src="{% static 'logo.png' %}" alt="Learnix" />
+    </div>
+    <p class="footer-copy">© 2025 Learnix. Built with Django. All rights reserved.</p>
+  </footer>
+
+{% endblock %}
