@@ -15,16 +15,33 @@
       box-sizing: border-box;
     }
 
-    :root {
+    /* Dark Mode (Default) */
+    :root,
+    html[data-theme="dark"] {
       --bg-dark: #0f1110;
       --bg-mid: #161817;
       --surface: rgba(255, 255, 255, 0.06);
       --surface-border: rgba(255, 255, 255, 0.12);
+      --surface-strong: rgba(255, 255, 255, 0.08);
       --text: #f4f4f3;
       --muted: #a1a1a0;
       --accent: #d17852;
       --accent-hover: #bf6846;
       --accent-glow: rgba(209, 120, 82, 0.45);
+    }
+
+    /* Light Mode */
+    html[data-theme="light"] {
+      --bg-dark: #ffffff;
+      --bg-mid: #f9f9f9;
+      --surface: rgba(0, 0, 0, 0.04);
+      --surface-border: rgba(0, 0, 0, 0.12);
+      --surface-strong: rgba(0, 0, 0, 0.06);
+      --text: #1a1a1a;
+      --muted: #666666;
+      --accent: #d17852;
+      --accent-hover: #bf6846;
+      --accent-glow: rgba(209, 120, 82, 0.25);
     }
 
     body {
@@ -35,12 +52,21 @@
         linear-gradient(135deg, var(--bg-dark), var(--bg-mid));
       color: var(--text);
       min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    html[data-theme="light"] body {
+      background:
+        radial-gradient(120% 90% at 15% 10%, rgba(209, 120, 82, 0.1), transparent 55%),
+        radial-gradient(100% 80% at 85% 90%, rgba(0, 0, 0, 0.05), transparent 60%),
+        linear-gradient(135deg, var(--bg-dark), var(--bg-mid));
     }
 
     /* ==============================
        NAVBAR
        ============================== */
     .navbar {
+      height: 90px;
       position: fixed;
       top: 0;
       left: 0;
@@ -54,6 +80,11 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--surface-border);
+      transition: all 0.3s ease;
+    }
+
+    html[data-theme="light"] .navbar {
+      background: rgba(255, 255, 255, 0.85);
     }
 
     .nav-brand a {
@@ -61,11 +92,11 @@
       line-height: 0;
     }
 
-    .nav-brand img {
-      height: 60px;
-      filter: drop-shadow(0 0 12px rgba(209, 120, 82, 0.3));
-      transition: filter 0.25s ease;
-    }
+    .nav-brand img{
+height:80px !important;
+width:auto;
+object-fit:contain;
+}
 
     .nav-brand img:hover {
       filter: drop-shadow(0 0 20px rgba(209, 120, 82, 0.55));
@@ -75,6 +106,7 @@
       display: flex;
       align-items: center;
       gap: 32px;
+
     }
 
     .nav-links a {
@@ -121,6 +153,28 @@
       color: #fff !important;
     }
 
+    .theme-toggle {
+      background: var(--surface-strong);
+      border: 1px solid var(--surface-border);
+      color: var(--text);
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      margin: 0 10px;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: white;
+      transform: scale(1.08);
+    }
+
     @media (max-width: 900px) {
       .navbar {
         padding: 16px 28px;
@@ -156,6 +210,7 @@
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#roles">Who It's For</a>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
       <a href="{% url 'loginpage' %}" class="btn-nav-login">Sign In</a>
       <a href="{% url 'registerpage' %}" class="btn-nav-register">Get Started</a>
     </div>
@@ -164,5 +219,29 @@
   <!-- PAGE CONTENT -->
   {% block content %}{% endblock %}
 
+  <script>
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme preference or default to 'dark'
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    htmlElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme);
+
+    // Theme toggle event listener
+    themeToggle.addEventListener('click', () => {
+      const theme = htmlElement.getAttribute('data-theme');
+      const newTheme = theme === 'dark' ? 'light' : 'dark';
+      
+      htmlElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+  </script>
 </body>
 </html>
