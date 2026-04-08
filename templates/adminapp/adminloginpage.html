@@ -4,12 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Account - Learnix</title>
+    <title>Admin Login - Learnix</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/registerpage.css' %}?v=15">
+    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}?v=15">
+    <style>
+        .admin-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .admin-badge-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
+    <div class="admin-indicator">👑 Admin Portal</div>
+
     <!-- LEFT BRAND PANEL -->
     <div class="left-panel">
         <div class="brand">
@@ -17,17 +38,19 @@
                 <img src="{% static 'logo.png' %}" alt="Learnix Logo">
             </a>
         </div>
+
         <p>
-            Join thousands of learners. Create your account and start
-            managing courses, assignments, and track your progress.
+            Administrator access to manage courses,
+            users, and monitor the entire learning platform.
         </p>
     </div>
 
-    <!-- RIGHT REGISTER PANEL -->
+    <!-- RIGHT LOGIN PANEL -->
     <div class="right-panel">
-        <div class="register-container">
-            <h2>Create Account</h2>
-            <p class="subtitle">Start your learning journey today</p>
+        <div class="login-container">
+            <div class="admin-badge-icon">👑</div>
+            <h2>Admin Sign In</h2>
+            <p class="subtitle">Access the admin dashboard</p>
 
             {% if messages %}
                 <div class="messages">
@@ -48,24 +71,14 @@
                 </div>
 
                 <div class="input-group">
-                    <input type="email" name="email" required>
-                    <label>Email</label>
-                </div>
-
-                <div class="input-group">
-                    <input type="password" name="password1" required>
+                    <input type="password" name="password" required>
                     <label>Password</label>
                 </div>
 
-                <div class="input-group">
-                    <input type="password" name="password2" required>
-                    <label>Confirm Password</label>
-                </div>
-
-                <button type="submit">Create Account</button>
+                <button type="submit">Sign In</button>
 
                 <p class="footer-text">
-                    Already have an account? <a href="{% url 'loginpage' %}">Sign in</a>
+                    Back to <a href="{% url 'loginpage' %}">student login</a>
                 </p>
             </form>
         </div>

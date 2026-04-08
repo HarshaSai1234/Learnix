@@ -1,0 +1,104 @@
+{% extends 'navbar/studentnavbar.html' %}
+
+{% block title %}Teacher Dashboard - Learnix{% endblock %}
+
+{% block content %}
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Welcome Back, <span class="highlight">{{ full_name }}</span>! 👨‍🏫</h1>
+                <p class="welcome-subtitle">Manage your courses and interact with students</p>
+            </div>
+            <div class="quick-actions">
+                <button class="action-btn" title="Create Course">➕ Create Course</button>
+                <button class="action-btn" title="View Students">👥 My Students</button>
+                <button class="action-btn" title="View Assignments">📝 View Assignments</button>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Active Courses</div>
+                        <div class="stat-number">3</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-number">156</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Pending Assignments</div>
+                        <div class="stat-number">12</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Average Rating</div>
+                        <div class="stat-number">4.8</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Info Section -->
+        <div class="courses-section" style="margin-top: 40px;">
+            <div class="section-header">
+                <h2 class="section-title">👤 Your Profile</h2>
+            </div>
+            <div style="background: var(--surface); border-radius: 12px; padding: 30px; border: 1px solid var(--surface-border);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px;">Full Name</p>
+                        <p style="font-weight: 600; font-size: 16px;">{{ full_name }}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px;">Email Address</p>
+                        <p style="font-weight: 600; font-size: 16px;">{{ email }}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px;">Username</p>
+                        <p style="font-weight: 600; font-size: 16px;">{{ username }}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px;">Status</p>
+                        <p style="font-weight: 600; font-size: 16px; color: #4CAF50;">✓ Approved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="courses-section" style="margin-top: 40px;">
+            <div class="section-header">
+                <h2 class="section-title">📚 My Courses</h2>
+                <a href="#" class="view-all">Create New →</a>
+            </div>
+            <div style="background: var(--surface); border-radius: 12px; padding: 30px; border: 1px solid var(--surface-border); text-align: center;">
+                <p style="font-size: 18px; color: var(--text-secondary);">No courses created yet.</p>
+                <button style="margin-top: 20px; background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Create Your First Course</button>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="courses-section" style="margin-top: 40px;">
+            <div class="section-header">
+                <h2 class="section-title">📊 Recent Activity</h2>
+            </div>
+            <div style="background: var(--surface); border-radius: 12px; padding: 30px; border: 1px solid var(--surface-border);">
+                <div style="text-align: center; color: var(--text-secondary);">
+                    <p style="font-size: 16px;">No recent activity</p>
+                    <p style="font-size: 14px; margin-top: 10px;">Start creating courses to see activity here</p>
+                </div>
+            </div>
+        </div>
+{% endblock %}

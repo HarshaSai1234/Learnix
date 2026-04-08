@@ -4,7 +4,7 @@
 {% block title %}Learnix – Your Smart Learning Platform{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+  <link rel="stylesheet" href="{% static 'css/homepage.css' %}?v=2">
 {% endblock %}
 
 {% block content %}
@@ -24,7 +24,7 @@
       </p>
       <div class="hero-cta">
         <a href="{% url 'registerpage' %}" class="btn-primary">Start Learning Free</a>
-        <a href="{% url 'loginpage' %}" class="btn-ghost">Sign In →</a>
+        <a href="{% url 'teacher_register' %}" class="btn-teach">Teach with Us 🚀</a>
       </div>
     </div>
     <div class="hero-visual">

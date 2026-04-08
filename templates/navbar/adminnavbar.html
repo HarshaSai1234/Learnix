@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Student Dashboard - Learnix{% endblock %}</title>
+    <title>{% block title %}Admin Dashboard - Learnix{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/loginpage.css' %}?v=15">
@@ -49,6 +49,16 @@
         .user-info p {
             color: var(--text);
             font-weight: 500;
+        }
+
+        .admin-badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         .theme-toggle {
@@ -119,7 +129,8 @@
     <header>
         <img class="logo" src="{% static 'logo.png' %}"></img>
         <div class="user-info">
-            <p>Welcome, {{ request.session.username }}!</p>
+            <div class="admin-badge">👑 Admin</div>
+            <p>Welcome, Admin!</p>
             <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
             <button class="logout-btn" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
         </div>
@@ -156,5 +167,3 @@
     </script>
 </body>
 </html>
-
-
