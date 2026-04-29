@@ -1,0 +1,199 @@
+{% extends 'navbar/studentnavbar.html' %}
+{% load static %}
+
+{% block title %}Grade Submission - Learnix{% endblock %}
+
+{% block content %}
+<style>
+    .grading-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .grading-card {
+        background: var(--surface);
+        border: 1px solid var(--surface-border);
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .submission-info {
+        background: rgba(209, 120, 82, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .info-label {
+        color: var(--muted);
+        font-weight: 500;
+    }
+
+    .info-value {
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--surface-border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        flex: 1;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-submit {
+        background: var(--accent);
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-cancel {
+        background: var(--surface-strong);
+        color: var(--text);
+    }
+
+    .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .download-btn {
+        background: var(--success);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .download-btn:hover {
+        background: var(--success-dark);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+</style>
+
+<div class="grading-container">
+    <!-- Header -->
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+        <a href="{% url 'view_submissions' submission.assignment.id %}" style="color: var(--accent); text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="font-size: 28px; font-weight: 700;">Grade Submission</h1>
+    </div>
+
+    <!-- Submission Details -->
+    <div class="grading-card">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Submission Details</h2>
+        
+        <div class="submission-info">
+            <div class="info-row">
+                <span class="info-label">Student Name:</span>
+                <span class="info-value">{{ submission.student_name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Assignment:</span>
+                <span class="info-value">{{ submission.assignment.title }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Submitted On:</span>
+                <span class="info-value">{{ submission.submitted_at|date:"M d, Y \a\t H:i" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">File:</span>
+                <span class="info-value">
+                    <a href="{% url 'download_submission' submission.id %}" class="download-btn">
+                        📥 Download File
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grading Form -->
+    <div class="grading-card">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Assign Grade</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="grade">Grade/Score</label>
+                <input 
+                    type="text" 
+                    id="grade" 
+                    name="grade" 
+                    placeholder="e.g., A, 90/100, 9/10" 
+                    value="{{ submission.grade }}"
+                    required
+                >
+                <p style="font-size: 12px; color: var(--muted); margin-top: 5px;">Enter the grade in any format (A, 90, 9/10, etc.)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="feedback">Feedback (Optional)</label>
+                <textarea 
+                    id="feedback" 
+                    name="feedback" 
+                    placeholder="Provide constructive feedback for the student...">{{ submission.feedback }}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-submit">✓ Submit Grade</button>
+                <a href="{% url 'view_submissions' submission.assignment.id %}" class="btn btn-cancel" style="display: flex; align-items: center; justify-content: center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -33,6 +33,12 @@ class Course(models.Model):
 
     class Meta:
         db_table = 'courses'
+    
+    def get_average_rating(self):
+        ratings = Rating.objects.filter(teacher=self.teacher)
+        if ratings.exists():
+            return sum([r.rating for r in ratings]) / len(ratings)
+        return 0
 
 class Enrollment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
@@ -64,3 +70,15 @@ class Submission(models.Model):
 
     class Meta:
         db_table = 'submissions'
+
+class Rating(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='ratings')
+    student_name = models.CharField(max_length=100)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='ratings', null=True, blank=True)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # 1-5 stars
+    feedback = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'ratings'
+        unique_together = ('teacher', 'student_name', 'course')

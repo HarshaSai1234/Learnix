@@ -4,9 +4,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
-from .models import Teacher, Course, Enrollment, Assignment, Submission
+from .models import Teacher, Course, Enrollment, Assignment, Submission, Rating
 from loginapp.models import User
 from django.utils import timezone
+from django.http import FileResponse
 import string
 import random
 
@@ -208,3 +209,60 @@ def generate_password(length=10):
     """Generate random password"""
     characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(characters) for _ in range(length))
+
+# --- DOWNLOAD SUBMISSION ---
+def download_submission(request, submission_id):
+    if not request.session.get('is_teacher'):
+        return redirect('loginpage')
+    
+    try:
+        submission = Submission.objects.get(id=submission_id)
+        assignment = submission.assignment
+        teacher = Teacher.objects.get(id=request.session.get('teacher_id'))
+        
+        # Check if teacher owns this assignment
+        if assignment.teacher != teacher:
+            messages.error(request, 'Unauthorized access.')
+            return redirect('teacherhomepage')
+        
+        # Download the file
+        file_response = FileResponse(submission.submission_file.open('rb'))
+        file_response['Content-Disposition'] = f'attachment; filename="{submission.student_name}_{assignment.title}.file"'
+        return file_response
+    except Submission.DoesNotExist:
+        messages.error(request, 'Submission not found.')
+        return redirect('teacher_dashboard')
+
+# --- GRADE SUBMISSION ---
+def grade_submission(request, submission_id):
+    if not request.session.get('is_teacher'):
+        return redirect('loginpage')
+    
+    try:
+        submission = Submission.objects.get(id=submission_id)
+        assignment = submission.assignment
+        teacher = Teacher.objects.get(id=request.session.get('teacher_id'))
+        
+        # Check if teacher owns this assignment
+        if assignment.teacher != teacher:
+            messages.error(request, 'Unauthorized access.')
+            return redirect('teacherhomepage')
+        
+        if request.method == 'POST':
+            grade = request.POST.get('grade')
+            feedback = request.POST.get('feedback', '')
+            
+            submission.grade = grade
+            submission.feedback = feedback
+            submission.save()
+            messages.success(request, f'Grade submitted for {submission.student_name}!')
+            return redirect('view_submissions', assignment_id=assignment.id)
+        
+        context = {
+            'submission': submission,
+            'assignment': assignment,
+        }
+        return render(request, 'teacherapp/grade_submission.html', context)
+    except Submission.DoesNotExist:
+        messages.error(request, 'Submission not found.')
+        return redirect('teacher_dashboard')

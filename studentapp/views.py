@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from instructorapp.models import Enrollment, Assignment, Course, Submission
+from instructorapp.models import Enrollment, Assignment, Course, Submission, Rating
 from loginapp.models import User
 
 # --- STUDENT DASHBOARD ---
@@ -57,7 +57,8 @@ def explore_courses(request):
         
     username = request.session.get('username')
     enrolled_course_ids = Enrollment.objects.filter(student_name=username).values_list('course_id', flat=True)
-    courses = Course.objects.exclude(id__in=enrolled_course_ids)
+    # Only show courses from approved teachers that student is not enrolled in
+    courses = Course.objects.filter(teacher__status='approved').exclude(id__in=enrolled_course_ids)
     
     return render(request, 'studentapp/explore_courses.html', {'courses': courses})
 
@@ -97,6 +98,27 @@ def submit_assignment(request, assignment_id):
             
     return redirect('view_assignments')
 
+# --- ENROLL IN COURSE ---
+def join_course(request, course_id):
+    if not request.session.get('user_id') or request.session.get('role') != 'student':
+        return redirect('loginpage')
+    
+    try:
+        course = Course.objects.get(id=course_id)
+        username = request.session.get('username')
+        
+        # Check if already enrolled
+        if Enrollment.objects.filter(course=course, student_name=username).exists():
+            messages.warning(request, 'You are already enrolled in this course.')
+        else:
+            # Create enrollment
+            Enrollment.objects.create(course=course, student_name=username)
+            messages.success(request, f'Successfully enrolled in {course.title}!')
+    except Course.DoesNotExist:
+        messages.error(request, 'Course not found.')
+    
+    return redirect('explore_courses')
+
 # --- MY PROGRESS ---
 def view_progress(request):
     if not request.session.get('user_id') or request.session.get('role') != 'student':
@@ -106,3 +128,81 @@ def view_progress(request):
     enrollments = Enrollment.objects.filter(student_name=username)
     
     return render(request, 'studentapp/view_progress.html', {'enrollments': enrollments})
+
+# --- VIEW COURSE DETAIL ---
+def course_detail(request, course_id):
+    if not request.session.get('user_id') or request.session.get('role') != 'student':
+        return redirect('loginpage')
+    
+    try:
+        course = Course.objects.get(id=course_id)
+        username = request.session.get('username')
+        
+        # Check if student is enrolled
+        if not Enrollment.objects.filter(course=course, student_name=username).exists():
+            messages.error(request, 'You are not enrolled in this course.')
+            return redirect('explore_courses')
+        
+        # Get assignments for this course
+        assignments = course.assignments.all().order_by('-due_date')
+        
+        # Get average rating
+        average_rating = course.get_average_rating()
+        
+        # Check if student has already rated
+        existing_rating = Rating.objects.filter(teacher=course.teacher, student_name=username, course=course).first()
+        
+        context = {
+            'course': course,
+            'assignments': assignments,
+            'average_rating': average_rating,
+            'existing_rating': existing_rating,
+            'teacher': course.teacher,
+        }
+        return render(request, 'studentapp/course_detail.html', context)
+    except Course.DoesNotExist:
+        messages.error(request, 'Course not found.')
+        return redirect('explore_courses')
+
+# --- RATE TEACHER ---
+def rate_teacher(request, course_id):
+    if not request.session.get('user_id') or request.session.get('role') != 'student':
+        return redirect('loginpage')
+    
+    if request.method == 'POST':
+        try:
+            course = Course.objects.get(id=course_id)
+            username = request.session.get('username')
+            rating_value = request.POST.get('rating')
+            feedback = request.POST.get('feedback', '')
+            
+            # Validate rating
+            if not rating_value or int(rating_value) < 1 or int(rating_value) > 5:
+                messages.error(request, 'Invalid rating. Please select between 1-5 stars.')
+                return redirect('course_detail', course_id=course_id)
+            
+            # Check if already rated
+            existing_rating = Rating.objects.filter(teacher=course.teacher, student_name=username, course=course).first()
+            
+            if existing_rating:
+                # Update rating
+                existing_rating.rating = int(rating_value)
+                existing_rating.feedback = feedback
+                existing_rating.save()
+                messages.success(request, 'Rating updated successfully!')
+            else:
+                # Create new rating
+                Rating.objects.create(
+                    teacher=course.teacher,
+                    student_name=username,
+                    course=course,
+                    rating=int(rating_value),
+                    feedback=feedback
+                )
+                messages.success(request, 'Thank you for rating!')
+        except Course.DoesNotExist:
+            messages.error(request, 'Course not found.')
+        except Exception as e:
+            messages.error(request, f'Error submitting rating: {str(e)}')
+    
+    return redirect('course_detail', course_id=course_id)

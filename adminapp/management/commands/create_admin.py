@@ -7,8 +7,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--username', type=str, default='Admin', help='Admin username')
-        parser.add_argument('--email', type=str, default='admin@learnix.com', help='Admin email')
-        parser.add_argument('--password', type=str, default='Admin12345', help='Admin password')
+        parser.add_argument('--email', type=str, default='admin@gmail.com', help='Admin email')
+        parser.add_argument('--password', type=str, default='admin', help='Admin password')
 
     def handle(self, *args, **options):
         username = options['username']

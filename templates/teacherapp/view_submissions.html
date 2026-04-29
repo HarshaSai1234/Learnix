@@ -22,40 +22,35 @@
                     <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">Student: {{ submission.student_name }}</h3>
                     <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Submitted on {{ submission.submitted_at|date:"M d, Y P" }}</p>
                     
-                    <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--surface-border); display: flex; align-items: center; justify-content: space-between;">
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--surface-border); display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
                         <span style="font-size: 13px; color: var(--text);">📄 {{ submission.submission_file.name|cut:"submissions/" }}</span>
-                        <a href="{{ submission.submission_file.url }}" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 700; font-size: 13px;">Download Work</a>
+                        <a href="{% url 'download_submission' submission.id %}" style="color: var(--accent); text-decoration: none; font-weight: 700; font-size: 13px;">📥 Download</a>
                     </div>
+
+                    {% if submission.grade %}
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 15px; border-radius: 12px;">
+                        <p style="font-size: 12px; color: var(--muted); margin-bottom: 5px;">Final Grade</p>
+                        <p style="font-size: 20px; font-weight: 700; color: #3b82f6;">{{ submission.grade }}</p>
+                        {% if submission.feedback %}
+                        <p style="font-size: 12px; color: var(--text); margin-top: 10px; line-height: 1.5;">{{ submission.feedback }}</p>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); padding: 15px; border-radius: 12px;">
+                        <p style="font-size: 12px; color: var(--muted);">⏳ Pending grading</p>
+                    </div>
+                    {% endif %}
                 </div>
 
-                <!-- Grading Form -->
-                <div style="background: rgba(255, 255, 255, 0.02); padding: 20px; border-radius: 20px; border: 1px solid var(--surface-border);">
+                <!-- Grading Link -->
+                <div style="display: flex; flex-direction: column; gap: 15px;">
                     {% if not deadline_passed %}
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="submission_id" value="{{ submission.id }}">
-                        
-                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                            <div style="flex: 1;">
-                                <label style="display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px;">Grade (e.g. A, 95/100)</label>
-                                <input type="text" name="grade" value="{{ submission.grade|default:'' }}" placeholder="Enter Grade" style="width: 100%; padding: 10px; background: var(--bg-mid); border: 1px solid var(--surface-border); border-radius: 8px; color: var(--text);">
-                            </div>
-                        </div>
-                        
-                        <label style="display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px;">Teacher Feedback</label>
-                        <textarea name="feedback" rows="2" style="width: 100%; padding: 10px; background: var(--bg-mid); border: 1px solid var(--surface-border); border-radius: 8px; color: var(--text); resize: none; margin-bottom: 15px;">{{ submission.feedback|default:'' }}</textarea>
-                        
-                        <button type="submit" style="width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s;">
-                            {% if submission.grade %}Update Grade{% else %}Save Grade{% endif %}
-                        </button>
-                    </form>
+                        <a href="{% url 'grade_submission' submission.id %}" style="padding: 15px 20px; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; text-align: center; text-decoration: none; display: block;">
+                            ✏️ {% if submission.grade %}Update Grade{% else %}Assign Grade{% endif %}
+                        </a>
                     {% else %}
-                        <div style="text-align: center; padding: 20px;">
-                            <p style="font-size: 12px; color: var(--muted); margin-bottom: 15px;">🔒 GRADING CLOSED (DEADLINE PASSED)</p>
-                            <div style="background: var(--accent); color: white; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 18px;">
-                                Final Grade: {{ submission.grade|default:"Not Graded" }}
-                            </div>
-                            <p style="margin-top: 15px; font-size: 14px; color: var(--text); font-style: italic;">{{ submission.feedback }}</p>
+                        <div style="padding: 15px 20px; background: rgba(255, 255, 255, 0.05); color: var(--muted); border-radius: 10px; text-align: center; font-weight: 700;">
+                            🔒 Grading Closed
                         </div>
                     {% endif %}
                 </div>

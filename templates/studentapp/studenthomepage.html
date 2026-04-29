@@ -24,6 +24,7 @@
         <p class="welcome-subtitle">Continue your learning journey and achieve your goals</p>
     </div>
     <div class="quick-actions">
+        <a href="{% url 'explore_courses' %}" class="action-btn" title="Explore Courses" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">🔍 Explore Courses</a>
         <a href="{% url 'view_assignments' %}" class="action-btn" title="View Assignments" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">📝 My Assignments</a>
     </div>
 </div>
@@ -55,20 +56,22 @@
     </div>
     <div class="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
         {% for course in enrolled_courses %}
-        <div class="course-card">
-            <div class="course-header">
-                <div class="course-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Enrolled</div>
-                <div class="course-icon">📘</div>
+        <a href="{% url 'course_detail' course.id %}" style="text-decoration: none;">
+            <div class="course-card">
+                <div class="course-header">
+                    <div class="course-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Enrolled</div>
+                    <div class="course-icon">📘</div>
+                </div>
+                <h3 class="course-title">{{ course.title }}</h3>
+                <p class="course-instructor">By {{ course.teacher.full_name }}</p>
+                <div style="margin-top: 20px; text-align: right;">
+                    <span style="color: var(--accent); font-weight: 600; font-size: 14px; cursor: pointer;">Go to Class →</span>
+                </div>
             </div>
-            <h3 class="course-title">{{ course.title }}</h3>
-            <p class="course-instructor">By {{ course.teacher.full_name }}</p>
-            <div style="margin-top: 20px; text-align: right;">
-                <span style="color: var(--accent); font-weight: 600; font-size: 14px; cursor: pointer;">Go to Class →</span>
-            </div>
-        </div>
+        </a>
         {% empty %}
         <div class="empty-state">
-            <p>You haven't joined any courses yet. Please contact your administrator to get enrolled.</p>
+            <p>You haven't joined any courses yet. <a href="{% url 'explore_courses' %}" style="color: var(--accent); text-decoration: none;">Explore courses</a> to get started.</p>
         </div>
         {% endfor %}
     </div>
