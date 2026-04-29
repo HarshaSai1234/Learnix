@@ -46,22 +46,22 @@
                     {% csrf_token %}
 
                     <div class="input-group">
-                        <input type="text" id="full_name" name="full_name" required>
+                        <input type="text" id="full_name" name="full_name" placeholder=" " required>
                         <label for="full_name">Full Name</label>
                     </div>
 
                     <div class="input-group">
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" placeholder=" " required>
                         <label for="email">Email Address</label>
                     </div>
 
                     <div class="input-group">
-                        <input type="tel" id="contact_number" name="contact_number" required>
+                        <input type="tel" id="contact_number" name="contact_number" placeholder=" " required>
                         <label for="contact_number">Contact Number</label>
                     </div>
 
                     <div class="input-group">
-                        <textarea id="address" name="address" required></textarea>
+                        <textarea id="address" name="address" placeholder=" " required></textarea>
                         <label for="address">Full Address</label>
                     </div>
 
@@ -83,6 +83,7 @@
                     <button type="submit">Submit Application</button>
 
                     <p class="footer-text">
+                        Already have an account? <a href="{% url 'loginpage' %}">Sign in</a><br>
                         Want to learn instead? <a href="{% url 'registerpage' %}">Register as Student</a>
                     </p>
                 </form>

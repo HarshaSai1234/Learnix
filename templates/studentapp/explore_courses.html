@@ -1,0 +1,44 @@
+{% extends 'navbar/studentnavbar.html' %}
+{% load static %}
+
+{% block title %}Explore Courses - Learnix{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+    <div style="margin-bottom: 40px; display: flex; align-items: center; gap: 15px;">
+        <a href="{% url 'studenthomepage' %}" style="color: var(--muted); text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="font-size: 32px; font-weight: 700;">Course Catalog</h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px;">
+        {% for course in courses %}
+        <div class="course-card" style="background: var(--surface); border: 1px solid var(--surface-border); border-radius: 24px; padding: 32px; display: flex; flex-direction: column; transition: all 0.3s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                <div style="width: 50px; height: 50px; background: rgba(99, 102, 241, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                    🎓
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--muted);">
+                    OPEN
+                </div>
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">{{ course.title }}</h3>
+            <p style="color: var(--accent); font-weight: 600; font-size: 14px; margin-bottom: 16px;">Instructor: {{ course.teacher.full_name }}</p>
+            
+            <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 25px; flex-grow: 1;">
+                {{ course.description|truncatewords:25 }}
+            </p>
+            
+            <a href="{% url 'join_course' course.id %}" style="display: block; text-align: center; text-decoration: none; background: var(--accent); color: white; padding: 16px; border-radius: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(209, 120, 82, 0.2);">
+                Enroll in Course
+            </a>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 100px; background: var(--surface); border-radius: 24px; border: 1px dashed var(--surface-border);">
+            <h3 style="font-size: 20px; color: var(--text);">No new courses available right now.</h3>
+            <p style="color: var(--muted); margin-top: 10px;">Check back later for new learning opportunities!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

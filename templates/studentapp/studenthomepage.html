@@ -1,212 +1,141 @@
 {% extends 'navbar/studentnavbar.html' %}
+{% load static %}
 
 {% block title %}Student Dashboard - Learnix{% endblock %}
 
 {% block content %}
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="welcome-content">
-                <h1 class="welcome-title">Welcome Back, <span class="highlight">{{ request.session.username }}</span>! 👋</h1>
-                <p class="welcome-subtitle">Continue your learning journey and achieve your goals</p>
-            </div>
-            <div class="quick-actions">
-                <button class="action-btn" title="Browse Courses">🔍 Explore Courses</button>
-                <button class="action-btn" title="View Assignments">📝 My Assignments</button>
-                <button class="action-btn" title="View Progress">📈 My Progress</button>
+<style>
+    /* Styling for empty states */
+    .empty-state {
+        grid-column: 1 / -1;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px dashed var(--surface-border);
+        border-radius: 20px;
+        padding: 60px 40px;
+        text-align: center;
+        color: var(--muted);
+    }
+</style>
+
+<!-- Welcome Section -->
+<div class="welcome-section">
+    <div class="welcome-content">
+        <h1 class="welcome-title">Welcome Back, <span class="highlight">{{ request.session.username }}</span>! 👋</h1>
+        <p class="welcome-subtitle">Continue your learning journey and achieve your goals</p>
+    </div>
+    <div class="quick-actions">
+        <a href="{% url 'view_assignments' %}" class="action-btn" title="View Assignments" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">📝 My Assignments</a>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-icon">📚</div>
+            <div class="stat-info">
+                <div class="stat-label">Active Courses</div>
+                <div class="stat-number">{{ course_count }}</div>
             </div>
         </div>
-
-        <!-- Statistics Section -->
-        <div class="stats">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-icon">📚</div>
-                    <div class="stat-info">
-                        <div class="stat-label">Active Courses</div>
-                        <div class="stat-number">12</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">📋</div>
-                    <div class="stat-info">
-                        <div class="stat-label">Pending Assignments</div>
-                        <div class="stat-number">2</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">⭐</div>
-                    <div class="stat-info">
-                        <div class="stat-label">Overall Progress</div>
-                        <div class="stat-number">85%</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-icon">🎯</div>
-                    <div class="stat-info">
-                        <div class="stat-label">Completed Modules</div>
-                        <div class="stat-number">28</div>
-                    </div>
-                </div>
+        <div class="stat-item">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <div class="stat-label">Pending Tasks</div>
+                <div class="stat-number">{{ assignments_count }}</div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Ongoing Courses Section -->
-        <div class="courses-section">
-            <div class="section-header">
-                <h2 class="section-title">🎓 Your Courses</h2>
-                <a href="#" class="view-all">View All →</a>
+<!-- Ongoing Courses Section -->
+<div class="courses-section">
+    <div class="section-header">
+        <h2 class="section-title">🎓 Your Active Courses</h2>
+    </div>
+    <div class="courses-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+        {% for course in enrolled_courses %}
+        <div class="course-card">
+            <div class="course-header">
+                <div class="course-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Enrolled</div>
+                <div class="course-icon">📘</div>
             </div>
-            <div class="courses-grid">
-                <!-- Course Card 1 -->
-                <div class="course-card">
-                    <div class="course-header">
-                        <div class="course-badge">In Progress</div>
-                        <div class="course-icon">🖥️</div>
-                    </div>
-                    <h3 class="course-title">Web Development Basics</h3>
-                    <p class="course-instructor">By Jane Smith</p>
-                    <div class="course-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 65%"></div>
-                        </div>
-                        <span class="progress-text">65% Complete</span>
-                    </div>
-                    <div class="course-meta">
-                        <span class="meta-item">📅 5 weeks left</span>
-                        <span class="meta-item">📖 3 modules</span>
-                    </div>
-                </div>
-
-                <!-- Course Card 2 -->
-                <div class="course-card">
-                    <div class="course-header">
-                        <div class="course-badge">In Progress</div>
-                        <div class="course-icon">📊</div>
-                    </div>
-                    <h3 class="course-title">Data Analytics 101</h3>
-                    <p class="course-instructor">By John Doe</p>
-                    <div class="course-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 42%"></div>
-                        </div>
-                        <span class="progress-text">42% Complete</span>
-                    </div>
-                    <div class="course-meta">
-                        <span class="meta-item">📅 3 weeks left</span>
-                        <span class="meta-item">📖 4 modules</span>
-                    </div>
-                </div>
-
-                <!-- Course Card 3 -->
-                <div class="course-card">
-                    <div class="course-header">
-                        <div class="course-badge completed">Completed</div>
-                        <div class="course-icon">✅</div>
-                    </div>
-                    <h3 class="course-title">Python Programming</h3>
-                    <p class="course-instructor">By Dr. Mike Johnson</p>
-                    <div class="course-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 100%"></div>
-                        </div>
-                        <span class="progress-text">100% Complete</span>
-                    </div>
-                    <div class="course-meta">
-                        <span class="meta-item">✓ Completed</span>
-                        <span class="meta-item">⭐ 4.8/5</span>
-                    </div>
-                </div>
+            <h3 class="course-title">{{ course.title }}</h3>
+            <p class="course-instructor">By {{ course.teacher.full_name }}</p>
+            <div style="margin-top: 20px; text-align: right;">
+                <span style="color: var(--accent); font-weight: 600; font-size: 14px; cursor: pointer;">Go to Class →</span>
             </div>
         </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>You haven't joined any courses yet. Please contact your administrator to get enrolled.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
-        <!-- Upcoming Assignments Section -->
-        <div class="assignments-section">
-            <div class="section-header">
-                <h2 class="section-title">📝 Upcoming Assignments</h2>
-                <a href="#" class="view-all">View All →</a>
+
+<!-- Pending Assignments Section -->
+<div class="assignments-section" style="margin-top: 40px;">
+    <div class="section-header">
+        <h2 class="section-title">🕒 Pending Assignments</h2>
+    </div>
+    <div class="assignments-list">
+        {% for assignment in pending_assignments %}
+        <div class="assignment-item" style="border-left: 4px solid var(--accent);">
+            <div class="assignment-left">
+                <div class="assignment-status due-soon" style="background: var(--accent-glow); color: var(--accent);">📝</div>
+                <div class="assignment-details">
+                    <h4 class="assignment-name">{{ assignment.title }}</h4>
+                    <p class="assignment-course">{{ assignment.course.title }}</p>
+                    <p class="assignment-description" style="font-size: 13px; color: var(--muted); margin-top: 5px;">{{ assignment.content|truncatewords:15 }}</p>
+                </div>
             </div>
-            <div class="assignments-list">
-                <div class="assignment-item">
-                    <div class="assignment-left">
-                        <div class="assignment-status due-soon">⚠️</div>
-                        <div class="assignment-details">
-                            <h4 class="assignment-name">HTML & CSS Project</h4>
-                            <p class="assignment-course">Web Development Basics</p>
-                            <p class="assignment-description">Create a responsive website portfolio</p>
-                        </div>
-                    </div>
-                    <div class="assignment-right">
-                        <div class="deadline">Due in 2 days</div>
-                        <span class="priority-badge high">High Priority</span>
-                    </div>
-                </div>
-
-                <div class="assignment-item">
-                    <div class="assignment-left">
-                        <div class="assignment-status normal">ℹ️</div>
-                        <div class="assignment-details">
-                            <h4 class="assignment-name">Data Visualization Task</h4>
-                            <p class="assignment-course">Data Analytics 101</p>
-                            <p class="assignment-description">Create visualizations for the given dataset</p>
-                        </div>
-                    </div>
-                    <div class="assignment-right">
-                        <div class="deadline">Due in 5 days</div>
-                        <span class="priority-badge medium">Medium Priority</span>
-                    </div>
-                </div>
-
-                <div class="assignment-item">
-                    <div class="assignment-left">
-                        <div class="assignment-status completed">✓</div>
-                        <div class="assignment-details">
-                            <h4 class="assignment-name">Python Quiz #3</h4>
-                            <p class="assignment-course">Python Programming</p>
-                            <p class="assignment-description">Online quiz covering functions and modules</p>
-                        </div>
-                    </div>
-                    <div class="assignment-right">
-                        <div class="deadline">Submitted</div>
-                        <span class="priority-badge success">Grade: 92%</span>
-                    </div>
-                </div>
+            <div class="assignment-right">
+                <div class="deadline">Due: {{ assignment.due_date|date:"M d, P" }}</div>
+                <a href="{% url 'view_assignments' %}" style="margin-top: 10px; background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 13px; font-weight: 600;">Submit Now</a>
             </div>
         </div>
+        {% empty %}
+        <div class="empty-state" style="padding: 40px;">
+            <p>🎉 All caught up! No pending assignments.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
-        <!-- Recent Activity Section -->
-        <div class="activity-section">
-            <div class="section-header">
-                <h2 class="section-title">📌 Recent Activity</h2>
+<!-- Completed Assignments Section -->
+<div class="assignments-section" style="margin-top: 50px; opacity: 0.8;">
+    <div class="section-header">
+        <h2 class="section-title">✅ Completed Assignments</h2>
+    </div>
+    <div class="assignments-list">
+        {% for assignment in completed_assignments %}
+        <div class="assignment-item" style="border-left: 4px solid var(--success); background: rgba(16, 185, 129, 0.02);">
+            <div class="assignment-left">
+                <div class="assignment-status completed" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">✔</div>
+                <div class="assignment-details">
+                    <h4 class="assignment-name">{{ assignment.title }}</h4>
+                    <p class="assignment-course">{{ assignment.course.title }}</p>
+                    <div style="display: flex; gap: 10px; margin-top: 8px;">
+                        {% if assignment.submission.grade %}
+                        <span style="background: var(--success); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Grade: {{ assignment.submission.grade }}</span>
+                        {% else %}
+                        <span style="background: var(--muted); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">Submitted</span>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="activity-feed">
-                <div class="activity-item">
-                    <div class="activity-time">2 hours ago</div>
-                    <div class="activity-content">
-                        <span class="activity-label">Course Started:</span>
-                        <strong>Web Development Basics - Module 2</strong>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-time">Yesterday</div>
-                    <div class="activity-content">
-                        <span class="activity-label">Assignment Submitted:</span>
-                        <strong>Database Design - Project</strong>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-time">3 days ago</div>
-                    <div class="activity-content">
-                        <span class="activity-label">Course Completed:</span>
-                        <strong>Python Programming</strong>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-time">5 days ago</div>
-                    <div class="activity-content">
-                        <span class="activity-label">New Certificate Earned:</span>
-                        <strong>🏆 Python Fundamentals</strong>
-                    </div>
-                </div>
+            <div class="assignment-right">
+                <div class="deadline" style="color: var(--muted); text-decoration: line-through;">Due: {{ assignment.due_date|date:"M d" }}</div>
+                <span style="font-size: 12px; color: var(--success); font-weight: 600; margin-top: 5px;">Completed on {{ assignment.submission.submitted_at|date:"M d" }}</span>
             </div>
         </div>
+        {% empty %}
+        <div class="empty-state" style="padding: 30px; opacity: 0.6;">
+            <p>No completed assignments yet. Start working on your tasks!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

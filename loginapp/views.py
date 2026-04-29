@@ -4,6 +4,16 @@ from django.contrib import messages
 from .models import User
 from adminapp.models import Admin
 from instructorapp.models import Teacher
+from functools import wraps
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(request, *args, **kwargs):
+        if 'role' not in request.session:
+            messages.error(request, 'Please login first!')
+            return redirect('loginpage')
+        return f(request, *args, **kwargs)
+    return decorated_function
 
 # Create your views here.
 def loginpage(request):
@@ -26,10 +36,10 @@ def loginpage(request):
         if admin and check_password(password, admin.password):
             # Store admin info in session
             request.session['is_admin'] = True
+            request.session['role'] = 'admin'
             request.session['admin_id'] = admin.id
             request.session['username'] = admin.username
             request.session['email'] = admin.email
-            messages.success(request, f'Welcome back, Admin {admin.username}!')
             return redirect('adminhomepage')
         
         # If not admin, check if login is for student
@@ -49,7 +59,7 @@ def loginpage(request):
             request.session['user_id'] = user.id
             request.session['username'] = user.username
             request.session['email'] = user.email
-            messages.success(request, f'Welcome back, {user.username}!')
+            request.session['role'] = 'student'
             return redirect('studenthomepage')
         
         # If not student, check if login is for teacher
@@ -72,10 +82,10 @@ def loginpage(request):
             
             # Store teacher info in session
             request.session['is_teacher'] = True
+            request.session['role'] = 'teacher'
             request.session['teacher_id'] = teacher.id
             request.session['username'] = teacher.username
             request.session['email'] = teacher.email
-            messages.success(request, f'Welcome back, {teacher.full_name}!')
             return redirect('teacherhomepage')
         else:
             messages.error(request, 'Invalid username/email or password.')
@@ -115,7 +125,8 @@ def registerpage(request):
             user = User.objects.create(
                 username=username,
                 email=email,
-                password=make_password(password1)
+                password=make_password(password1),
+                role='student'
             )
             messages.success(request, 'Account created successfully! Please login.')
             return redirect('loginpage')
@@ -126,9 +137,16 @@ def registerpage(request):
     return render(request, 'loginapp/registerpage.html')
 
 def studenthomepage(request):
-    return render(request, 'studentapp/studenthomepage.html')
+    return redirect('studenthomepage')
 
 def homepage(request):
+    role = request.session.get('role')
+    if role == 'student':
+        return redirect('studenthomepage')
+    elif role == 'teacher':
+        return redirect('teacherhomepage')
+    elif role == 'admin':
+        return redirect('adminhomepage')
     return render(request, 'loginapp/homepage.html')
 
 def logout(request):
@@ -138,21 +156,76 @@ def logout(request):
     return redirect('loginpage')
 
 def teacherhomepage(request):
-    # Check if teacher is logged in
-    if not request.session.get('is_teacher'):
-        return redirect('loginpage')
+    return redirect('teacher_dashboard')
+
+def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        
+        role = request.session.get('role')
+        user_obj = None
+        
+        # Identify the user object based on role
+        if role == 'admin':
+            user_obj = Admin.objects.get(id=request.session['admin_id'])
+        elif role == 'teacher':
+            user_obj = Teacher.objects.get(id=request.session['teacher_id'])
+        elif role == 'student':
+            user_obj = User.objects.get(id=request.session['user_id'])
+            
+        if not user_obj:
+            messages.error(request, 'User not found.')
+            return redirect('loginpage')
+            
+        # Verify current password
+        if not check_password(current_password, user_obj.password):
+            messages.error(request, 'Current password is incorrect.')
+            return render(request, 'loginapp/change_password.html')
+            
+        # Verify new passwords match
+        if new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+            return render(request, 'loginapp/change_password.html')
+            
+        # Validate password length
+        if len(new_password) < 6:
+            messages.error(request, 'Password must be at least 6 characters long.')
+            return render(request, 'loginapp/change_password.html')
+            
+        # Update password
+        user_obj.password = make_password(new_password)
+        user_obj.save()
+        
+        messages.success(request, 'Password changed successfully!')
+        
+        # Redirect based on role
+        if role == 'admin':
+            return redirect('adminhomepage')
+        elif role == 'teacher':
+            return redirect('teacherhomepage')
+        else:
+            return redirect('studenthomepage')
+            
+    return render(request, 'loginapp/change_password.html')
+
+def profile(request):
+    role = request.session.get('role')
+    user_data = {
+        'username': request.session.get('username'),
+        'email': request.session.get('email'),
+        'role': role.capitalize()
+    }
     
-    # Get teacher data from session
-    teacher_id = request.session.get('teacher_id')
-    
-    try:
-        teacher = Teacher.objects.get(id=teacher_id)
-        context = {
-            'teacher': teacher,
-            'full_name': teacher.full_name,
-            'email': teacher.email,
-            'username': teacher.username
-        }
-        return render(request, 'teacherapp/teacherhomepage.html', context)
-    except Teacher.DoesNotExist:
-        return redirect('loginpage')
+    # Add full name if available (specifically for teachers)
+    if role == 'teacher':
+        try:
+            teacher = Teacher.objects.get(id=request.session['teacher_id'])
+            user_data['full_name'] = teacher.full_name
+        except:
+            pass
+    elif role == 'student':
+        user_data['full_name'] = request.session.get('username') # Students use username as name currently
+        
+    return render(request, 'loginapp/profile.html', {'user': user_data})

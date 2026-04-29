@@ -1,0 +1,51 @@
+{% extends 'navbar/studentnavbar.html' %}
+{% load static %}
+
+{% block title %}My Progress - Learnix{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="margin-bottom: 40px; display: flex; align-items: center; gap: 15px;">
+        <a href="{% url 'studenthomepage' %}" style="color: var(--muted); text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="font-size: 32px; font-weight: 700;">My Progress</h1>
+    </div>
+
+    <!-- Overall Summary -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+        <div style="background: var(--surface); border: 1px solid var(--surface-border); padding: 30px; border-radius: 24px; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">📉</div>
+            <div style="font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Enrolled Courses</div>
+            <div style="font-size: 36px; font-weight: 700; color: var(--text); margin-top: 5px;">{{ enrollments.count }}</div>
+        </div>
+        <div style="background: var(--surface); border: 1px solid var(--surface-border); padding: 30px; border-radius: 24px; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
+            <div style="font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Points Earned</div>
+            <div style="font-size: 36px; font-weight: 700; color: var(--accent); margin-top: 5px;">0</div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 22px; font-weight: 600; margin-bottom: 25px;">Course Tracking</h2>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        {% for enrollment in enrollments %}
+        <div style="background: var(--surface); border: 1px solid var(--surface-border); padding: 30px; border-radius: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; font-weight: 600;">{{ enrollment.course.title }}</h3>
+                <span style="background: rgba(76, 175, 80, 0.1); color: #4CAF50; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;">Active</span>
+            </div>
+            
+            <div style="margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; color: var(--muted);">
+                <span>Curriculum Progress</span>
+                <span>0% Complete</span>
+            </div>
+            <div style="height: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 5px; overflow: hidden;">
+                <div style="width: 0%; height: 100%; background: var(--accent);"></div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 60px; color: var(--muted);">
+            No progress data available yet. Join a course to start tracking!
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

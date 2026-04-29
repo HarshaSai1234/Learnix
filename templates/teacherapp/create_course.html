@@ -1,0 +1,123 @@
+{% extends 'navbar/studentnavbar.html' %}
+{% load static %}
+
+{% block title %}Create Course - Learnix{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    .form-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+        border-radius: 28px;
+        padding: 48px;
+        border: 1px solid var(--surface-border);
+        backdrop-filter: blur(28px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 28px;
+    }
+
+    .input-group input, .input-group textarea {
+        width: 100%;
+        padding: 18px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--surface-border);
+        border-radius: 14px;
+        color: var(--text);
+        font-size: 15px;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+    .input-group input:focus, .input-group textarea:focus {
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 4px rgba(209, 120, 82, 0.2);
+    }
+
+    .input-group label {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: 15px;
+        pointer-events: none;
+        transition: all 0.2s ease-out;
+        padding: 0 5px;
+        z-index: 10;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label,
+    .input-group textarea:focus ~ label,
+    .input-group textarea:not(:placeholder-shown) ~ label {
+        top: 0;
+        transform: translateY(-50%) scale(0.85);
+        color: var(--accent);
+        background: #141615;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent), #e28a62);
+        color: white;
+        border: none;
+        padding: 18px;
+        border-radius: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        border: 1px solid var(--surface-border);
+        padding: 18px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(209, 120, 82, 0.3); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+</style>
+
+<div style="max-width: 800px; margin: 0 auto; padding-bottom: 60px;">
+    <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+        <a href="{% url 'teacher_dashboard' %}" style="color: var(--muted); text-decoration: none; font-size: 24px; transition: color 0.2s;">←</a>
+        <h1 style="font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">Create New Course</h1>
+    </div>
+
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="input-group">
+                <input type="text" name="title" required placeholder=" ">
+                <label>Course Title</label>
+            </div>
+
+            <div class="input-group">
+                <textarea name="description" required rows="6" placeholder=" " style="resize: none;"></textarea>
+                <label>Course Description</label>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <button type="submit" class="btn-primary">Publish Course</button>
+                <a href="{% url 'teacher_dashboard' %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'navbar/studentnavbar.html' %}
+{% load static %}
+
+{% block title %}Student List - Learnix{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="{% url 'teacher_dashboard' %}" style="color: var(--muted); text-decoration: none; font-size: 20px;">←</a>
+            <h1 style="font-size: 28px; font-weight: 600;">Registered Students</h1>
+        </div>
+        <div style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+            {{ students.count }} Total Students
+        </div>
+    </div>
+
+    <div style="background: var(--surface); border-radius: 24px; border: 1px solid var(--surface-border); overflow: hidden; backdrop-filter: blur(20px);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--surface-border);">
+                    <th style="padding: 20px; color: var(--muted); font-weight: 500; font-size: 14px;">STUDENT NAME</th>
+                    <th style="padding: 20px; color: var(--muted); font-weight: 500; font-size: 14px;">EMAIL ADDRESS</th>
+                    <th style="padding: 20px; color: var(--muted); font-weight: 500; font-size: 14px;">JOINED DATE</th>
+                    <th style="padding: 20px; color: var(--muted); font-weight: 500; font-size: 14px; text-align: right;">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr style="border-bottom: 1px solid var(--surface-border); transition: background 0.2s;">
+                    <td style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 600; color: white;">
+                                {{ student.username|first|upper }}
+                            </div>
+                            <span style="font-weight: 500;">{{ student.username }}</span>
+                        </div>
+                    </td>
+                    <td style="padding: 20px; color: var(--muted);">{{ student.email }}</td>
+                    <td style="padding: 20px; color: var(--muted);">{{ student.created_at|date:"d M Y"|default:"Not Available" }}</td>
+                    <td style="padding: 20px; text-align: right;">
+                        <button style="background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">View Profile</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 60px; text-align: center; color: var(--muted);">
+                        No students found in the system.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

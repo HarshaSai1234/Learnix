@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('loginapp.urls')),
     path('admin-panel/', include('adminapp.urls')),
     path('teacher/', include('instructorapp.urls')),
+    path('student/', include('studentapp.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

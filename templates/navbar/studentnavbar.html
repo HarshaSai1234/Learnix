@@ -7,8 +7,8 @@
     <title>{% block title %}Student Dashboard - Learnix{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}?v=15">
-    <link rel="stylesheet" href="{% static 'css/studenthomepage.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}?v=16">
+    <link rel="stylesheet" href="{% static 'css/studenthomepage.css' %}?v=3">
     <style>
         body {
             min-height: 100vh;
@@ -16,8 +16,8 @@
             flex-direction: column;
             background: var(--bg);
             background-image:
-                radial-gradient(ellipse 100% 80% at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 80% 60% at 80% 100%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+                radial-gradient(ellipse 100% 80% at 20% 0%, rgba(209, 120, 82, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 80% 60% at 80% 100%, rgba(191, 104, 70, 0.08) 0%, transparent 55%);
             transition: background 0.3s ease, color 0.3s ease;
         }
 
@@ -31,11 +31,26 @@
             border-bottom: 1px solid var(--surface-border);
             backdrop-filter: blur(24px);
             transition: all 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+        }
+
+        .logo-link {
+            width: 5%;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover {
+            transform: scale(1.05);
         }
 
         .logo {
-            width: 5%;
-            display: flex;
+            width: 100%;
+            display: block;
             padding: 0;
             margin: 0;
         }
@@ -112,27 +127,148 @@
                 width: 100%;
             }
         }
+        /* Settings Dropdown Styles */
+        .settings-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .settings-btn {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text);
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(12px);
+        }
+
+        .settings-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        .settings-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            background: var(--surface-strong);
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            min-width: 220px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: none;
+            flex-direction: column;
+            padding: 8px;
+            z-index: 10000;
+            backdrop-filter: blur(32px);
+        }
+
+        .settings-menu.active {
+            display: flex;
+            animation: menuFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes menuFadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .settings-item {
+            padding: 12px 16px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .settings-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .settings-item span {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <!-- Header/Navbar -->
     <header>
-        <img class="logo" src="{% static 'logo.png' %}"></img>
+        <a href="{% url 'homepage' %}" class="logo-link">
+            <img class="logo" src="{% static 'logo.png' %}">
+        </a>
         <div class="user-info">
             <p>Welcome, {{ request.session.username }}!</p>
-            <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
-            <button class="logout-btn" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+            <div class="settings-container">
+                <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
+                <div class="settings-menu" id="settingsMenu">
+                    <a href="{% url 'profile' %}" class="settings-item">
+                        <span>👤</span> My Profile
+                    </a>
+                    <a href="{% url 'change_password' %}" class="settings-item">
+                        <span>🔑</span> Change Password
+                    </a>
+                    <button id="themeToggle" class="settings-item" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left;">
+                        <span id="themeToggleIcon">🌙</span> Toggle Theme
+                    </button>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="window.location.href='{% url 'logout' %}';" style="margin-left: 10px;">Logout</button>
         </div>
     </header>
 
     <div class="container">
+        <!-- Toast Notification Container -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <!-- Content Block -->
         {% block content %}{% endblock %}
     </div>
 
     <script>
+        // Auto-hide alerts after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateX(50px) scale(0.9)';
+                    alert.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                    setTimeout(() => alert.remove(), 400);
+                }, 3000);
+            });
+        });
+
         // Theme toggle functionality
         const themeToggle = document.getElementById('themeToggle');
+        const themeToggleIcon = document.getElementById('themeToggleIcon');
         const htmlElement = document.documentElement;
 
         // Check for saved theme preference or default to 'dark'
@@ -141,18 +277,65 @@
         updateThemeIcon(currentTheme);
 
         // Theme toggle event listener
-        themeToggle.addEventListener('click', () => {
-            const theme = htmlElement.getAttribute('data-theme');
-            const newTheme = theme === 'dark' ? 'light' : 'dark';
-            
-            htmlElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
+        if (themeToggle) {
+            themeToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Keep menu open
+                const theme = htmlElement.getAttribute('data-theme');
+                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
 
         function updateThemeIcon(theme) {
-            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            if (themeToggleIcon) {
+                themeToggleIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
         }
+
+        // Settings Dropdown click toggle logic
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsMenu = document.getElementById('settingsMenu');
+
+        if (settingsBtn && settingsMenu) {
+            settingsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking anywhere else
+            document.addEventListener('click', (e) => {
+                if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+                    settingsMenu.classList.remove('active');
+                }
+            });
+
+            // Ensure menu is closed when navigating back (bfcache)
+            window.addEventListener('pageshow', (event) => {
+                settingsMenu.classList.remove('active');
+            });
+
+            // Close menu when a link inside is clicked
+            settingsMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    settingsMenu.classList.remove('active');
+                });
+            });
+        }
+        // Auto-hide alert messages after 2 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px) scale(0.95)';
+                    alert.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    setTimeout(() => alert.remove(), 500);
+                }, 1800);
+            });
+        });
     </script>
 </body>
 </html>

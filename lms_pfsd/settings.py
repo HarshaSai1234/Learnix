@@ -76,18 +76,18 @@ WSGI_APPLICATION = 'lms_pfsd.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-#DATABASES = {
- #   'default': {
-  #      'ENGINE': 'django.db.backends.sqlite3',
-   #     'NAME': BASE_DIR / 'db.sqlite3',
-    #}
-#}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Learnix',
         'USER': 'postgres',
-        'PASSWORD': 'harsha',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -145,3 +145,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'harshap3712@gmail.com'  # Change this to your Gmail
 EMAIL_HOST_PASSWORD = 'lsyo vbww dcpo qtrw'  # Generate at: https://myaccount.google.com/apppasswords
 DEFAULT_FROM_EMAIL = 'noreply@learnix.com'
+
+# Redirect URLs
+LOGIN_URL = 'loginpage'
